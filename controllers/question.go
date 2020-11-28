@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"math/rand"
 	"net/http"
 
 	models "github.com/dzakyputra/random-questions-backend/models"
@@ -24,6 +25,26 @@ func FindQuestionByID(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	id := c.Param("id")
 	var question models.Question
+	if err := db.Find(&question, id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": question})
+}
+
+// FindRandomQuestion return a random question in the database
+func FindRandomQuestion(c *gin.Context) {
+
+	db := c.MustGet("db").(*gorm.DB)
+	var question models.Question
+	var total int
+
+	// Find total questions
+	db.Model(&question).Count(&total)
+
+	var id = rand.Intn(total-1) + 1
+
+	// Find the question based on the random generated number
 	if err := db.Find(&question, id).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
