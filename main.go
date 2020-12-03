@@ -26,7 +26,7 @@ func main() {
 
 	r.GET("/questions", controllers.FindQuestions)
 	r.GET("/question/:id", controllers.FindQuestionByID)
-	r.GET("/questions/random", controllers.FindRandomQuestion)
+	r.GET("/questions/random", controllers.FindRandomQuestions)
 
 	r.Run()
 }
